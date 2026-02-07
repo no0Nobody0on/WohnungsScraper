@@ -252,7 +252,7 @@ Das Programm tarnt sich als normaler Browser durch:
 
 ### "Tcl data directory not found"
 
-- Dieser Fehler sollte in Version 2.08 nicht mehr auftreten
+- Dieser Fehler sollte in Version 2.0.8 nicht mehr auftreten
 - Falls doch: `build_windows.bat` manuell ausführen
 
 ### "Chrome Portable Download fehlgeschlagen"
@@ -277,7 +277,7 @@ Das Programm tarnt sich als normaler Browser durch:
 
 ## Lizenz & Credits
 
-**Version**: 2.08  
+**Version**: 2.0.8  
 **Copyright**: © no0Nobody0on  
 **Lizenz**: Privat
 
@@ -292,7 +292,7 @@ Das Programm tarnt sich als normaler Browser durch:
 
 ## Changelog
 
-### v2.08 (2025-02-06)
+### v2.0.8 (2025-02-06)
 - Schnellsuche: 25 Seiten (vorher 10)
 - Vollsuche: Alle Seiten unbegrenzt (vorher 50)
 - Exakte Suche: PLZ + Straße + Hausnummer
@@ -302,7 +302,7 @@ Das Programm tarnt sich als normaler Browser durch:
 - tkinter entfernt (verursachte Fehler)
 - Installer verbessert
 
-### v2.07
+### v2.0.7
 - Modulare Code-Struktur
 - Chrome Portable Support
 - Verbessertes Fingerprint-Spoofing
