@@ -202,4 +202,3 @@ echo.
 echo Den gesamten "WohnungsScraper" Ordner koennen Sie
 echo auf einen USB-Stick kopieren.
 echo.
-pause
