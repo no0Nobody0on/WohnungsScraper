@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>WohnungsScraper</title>
+    <style>{{CSS_CONTENT}}</style>
+</head>
+<body>
+    <!-- Custom Title Bar -->
+    <div class="title-bar">
+        <div class="title-bar-title">WohnungsScraper v2.08</div>
+        <div class="title-bar-buttons">
+            <button class="title-bar-btn" onclick="toggleHelpMenu()" title="Hilfe">?</button>
+            <button class="title-bar-btn" onclick="minimizeWindow()" title="Minimieren">&#8211;</button>
+            <button class="title-bar-btn close" onclick="closeWindow()" title="Schliessen">&#10005;</button>
+        </div>
+        
+        <!-- Help Menu Dropdown -->
+        <div class="help-menu" id="help-menu">
+            <h4>Hilfe &amp; Links</h4>
+            <a href="#" onclick="openUrl('https://github.com/no0Nobody0on/WohnungsScraper')">GitHub Repository</a>
+            <a href="#" onclick="openUrl('https://github.com/no0Nobody0on/WohnungsScraper/issues')">Fehler melden</a>
+            <a href="#" onclick="openUrl('https://github.com/no0Nobody0on/WohnungsScraper/wiki')">Dokumentation</a>
+            <hr>
+            <div class="version-info">
+                Version 2.08<br>
+                &copy; no0Nobody0on
+            </div>
+        </div>
+    </div>
+    
+    <div class="app">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Wohnungs<span>Scraper</span></h1>
+            </div>
+            <nav class="nav">
+                <div class="nav-item active" data-page="search" onclick="navigate('search')">
+                    <span class="nav-icon">&#128269;</span> Suche
+                </div>
+                <div class="nav-item" data-page="addresses" onclick="navigate('addresses')">
+                    <span class="nav-icon">&#128205;</span> Adressen
+                </div>
+                <div class="nav-item" data-page="archive" onclick="navigate('archive')">
+                    <span class="nav-icon">&#128218;</span> Archiv
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="version">Version 2.08</div>
+                <div class="author">&copy; no0Nobody0on</div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Search Page -->
+            <div id="page-search" class="page active">
+                <div class="header">
+                    <h2><strong>Suche</strong> - Batch-Scraping</h2>
+                    <div class="header-actions">
+                        <select id="search-mode">
+                            <option value="quick">Schnell (25 Seiten)</option>
+                            <option value="full">Vollsuche (alle Seiten)</option>
+                        </select>
+                        <select id="match-mode">
+                            <option value="exact">Exakt (PLZ+Str.+Nr.)</option>
+                            <option value="extended">Erweitert (PLZ+Str.)</option>
+                        </select>
+                        <button class="btn btn-success" id="btn-start" onclick="startSearch()">&#9654; Starten</button>
+                        <button class="btn btn-danger" id="btn-stop" onclick="stopSearch()" style="display:none;">&#9632; Stoppen</button>
+                    </div>
+                </div>
+                
+                <!-- Website-Auswahl -->
+                <div class="card" style="margin-bottom:15px;">
+                    <div class="card-title"><span class="icon">&#127760;</span> Websites auswaehlen</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:15px;padding:10px 0;">
+                        <label class="checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" id="cb-wggesucht">
+                            <span>WG-Gesucht.de</span>
+                        </label>
+                        <label class="checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" id="cb-immowelt">
+                            <span>Immowelt.de</span>
+                        </label>
+                        <label class="checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" id="cb-kleinanzeigen">
+                            <span>Kleinanzeigen.de</span>
+                        </label>
+                        <label class="checkbox-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" id="cb-immoscout">
+                            <span>ImmobilienScout24.de</span>
+                            <span style="color:#ffc107;font-size:11px;">(Bot-Schutz!)</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Progress -->
+                <div id="progress-container" class="progress-container" style="display:none;">
+                    <div class="progress-header">
+                        <span id="progress-website" class="progress-website">Initialisiere...</span>
+                        <span id="progress-percent" class="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-bar" class="progress-bar-fill" style="width:0%"></div>
+                    </div>
+                    <div class="progress-info">
+                        <span id="progress-action">Starte...</span>
+                        <span>Zeit: <span id="progress-time">00:00</span></span>
+                    </div>
+                    <div class="progress-stats">
+                        <div class="progress-stat">
+                            <div id="progress-listings" class="progress-stat-value">0</div>
+                            <div class="progress-stat-label">Listings</div>
+                        </div>
+                        <div class="progress-stat">
+                            <div id="progress-matches" class="progress-stat-value">0</div>
+                            <div class="progress-stat-label">Treffer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Log -->
+                <div class="card">
+                    <div class="card-title"><span class="icon">&#128221;</span> Protokoll</div>
+                    <div class="log-container" id="log-container">
+                        <div>Bereit. Klicke "Starten" um die Suche zu beginnen.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Addresses Page -->
+            <div id="page-addresses" class="page">
+                <div class="header">
+                    <h2><strong>Adressen</strong> verwalten</h2>
+                </div>
+                
+                <!-- Add Address Form -->
+                <div class="card">
+                    <div class="card-title"><span class="icon">&#10133;</span> Neue Adresse hinzufuegen</div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex:2;">
+                            <label>Strasse *</label>
+                            <input type="text" id="new-street" placeholder="Musterstrasse">
+                        </div>
+                        <div class="form-group" style="flex:0.5;">
+                            <label>Hausnr. *</label>
+                            <input type="text" id="new-house" placeholder="12a">
+                        </div>
+                        <div class="form-group" style="flex:0.7;">
+                            <label>PLZ</label>
+                            <input type="text" id="new-plz" placeholder="12345">
+                        </div>
+                        <div class="form-group" style="flex:1.2;">
+                            <label>Stadt *</label>
+                            <input type="text" id="new-city" placeholder="Berlin">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>Notizen</label>
+                            <input type="text" id="new-notes" placeholder="Optional">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addAddress()">&#10133; Hinzufuegen</button>
+                </div>
+                
+                <!-- Address List -->
+                <div class="card">
+                    <div class="card-title"><span class="icon">&#128203;</span> Gespeicherte Adressen</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Strasse</th>
+                                <th style="text-align:center;">Nr.</th>
+                                <th style="text-align:center;">PLZ</th>
+                                <th>Stadt</th>
+                                <th>Notizen</th>
+                                <th style="width:120px;">Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="addresses-table"></tbody>
+                    </table>
+                    <div id="addresses-empty" class="empty">
+                        <div class="empty-icon">&#128205;</div>
+                        <p>Keine Adressen vorhanden</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Archive Page -->
+            <div id="page-archive" class="page">
+                <div class="header">
+                    <h2><strong>Archiv</strong> - Suchberichte</h2>
+                </div>
+                
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th style="text-align:center;">Adressen</th>
+                                <th>Ergebnis</th>
+                                <th>Modus</th>
+                                <th>Status</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reports-table"></tbody>
+                    </table>
+                    <div id="reports-empty" class="empty">
+                        <div class="empty-icon">&#128218;</div>
+                        <p>Keine Berichte vorhanden</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Matches Modal -->
+    <div id="matches-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="matches-modal-title">Treffer</h3>
+                <button class="modal-close" onclick="closeMatchesModal()">&times;</button>
+            </div>
+            <div id="matches-list"></div>
+        </div>
+    </div>
+    
+    <!-- Edit Address Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content" style="max-width:600px;">
+            <div class="modal-header">
+                <h3>Adresse bearbeiten</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <input type="hidden" id="edit-address-id">
+            <div class="form-row">
+                <div class="form-group" style="flex:2;">
+                    <label>Strasse *</label>
+                    <input type="text" id="edit-street">
+                </div>
+                <div class="form-group" style="flex:0.5;">
+                    <label>Hausnr. *</label>
+                    <input type="text" id="edit-house">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:0.7;">
+                    <label>PLZ</label>
+                    <input type="text" id="edit-plz">
+                </div>
+                <div class="form-group" style="flex:1.3;">
+                    <label>Stadt *</label>
+                    <input type="text" id="edit-city">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Notizen</label>
+                    <input type="text" id="edit-notes">
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="saveEditAddress()">Speichern</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>{{JS_CONTENT}}</script>
+</body>
+</html>
