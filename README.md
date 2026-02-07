@@ -1,4 +1,4 @@
-# WohnungsScraper v2.08
+# WohnungsScraper v2.0.8
 
 Ein portables Windows-Programm zur Überwachung von Immobilienportalen auf illegale Untervermietung.
 
