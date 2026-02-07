@@ -1,7 +1,7 @@
 """
 WohnungsScraper - Portable Desktop-Anwendung
 Fuer Windows ohne Installation - Komplett portable Version
-Version 5.07 - Modulare Struktur + Chrome Portable Support
+Version 2.0.8 - Modulare Struktur + Chrome Portable Support
 © no0Nobody0on
 
 Modulare Struktur:
